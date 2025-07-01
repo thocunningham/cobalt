@@ -82,16 +82,11 @@ func (s *source) init(in io.Reader, file string) {
 const linebase = 1
 const colbase = 1
 
-// pos returns the (line, col) source position of s.ch.
-func (s *source) pos() (line, col uint) {
-	return linebase + s.line, colbase + s.col
-}
+func (s *source) pos() (line, col uint) { return linebase + s.line, colbase + s.col }
 
-// error reports the error msg at source position s.pos().
-func (s *source) error(msg string) {
-	line, col := s.pos()
-	base.Bailout(Error{src.MakePos(s.file, line, col), msg})
-}
+func (s *source) at(line, col uint) src.Pos       { return src.MakePos(s.file, line, col) }
+func (s *source) errorAt(pos src.Pos, msg string) { base.Bailout(Error{pos, msg}) }
+func (s *source) error(msg string)                { s.errorAt(s.at(s.pos()), msg) }
 
 // start starts a new active source segment (including s.ch).
 // As long as stop has not been called, the active segment's
@@ -101,7 +96,6 @@ func (s *source) stop()           { s.b = -1 }
 func (s *source) segment() []byte { return s.buf[s.b : s.r-s.chw] }
 
 func (s *source) nextch() {
-redo:
 	s.col += uint(s.chw)
 	if s.ch == '\n' {
 		s.line++
@@ -114,7 +108,6 @@ redo:
 		s.chw = 1
 		if s.ch == 0 {
 			s.error("invalid NUL character")
-			goto redo
 		}
 		return
 	}
@@ -129,7 +122,6 @@ redo:
 		if s.ioerr != io.EOF {
 			// ensure we never start with a '/' (e.g., rooted path) in the error message
 			s.error("I/O error: " + s.ioerr.Error())
-			s.ioerr = nil
 		}
 		s.ch = -1
 		s.chw = 0
@@ -141,16 +133,6 @@ redo:
 
 	if s.ch == utf8.RuneError && s.chw == 1 {
 		s.error("invalid UTF-8 encoding")
-		goto redo
-	}
-
-	// BOM's are only allowed as the first character in a file
-	const BOM = 0xfeff
-	if s.ch == BOM {
-		if s.line > 0 || s.col > 0 {
-			s.error("invalid BOM in the middle of the file")
-		}
-		goto redo
 	}
 }
 
