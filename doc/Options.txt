@@ -1,0 +1,16 @@
+Cobalt allows for optional types, types where a value is either one of the
+element type, or nothing. This is especially useful for pointers that may or
+may not point to something. This feature is accompanied by a built-in constant
+"none" indicating a non-existent value.
+
+  var x: ?intptr = 0;
+  var y: ?intptr = none;
+
+Option values may be used in boolean conditions, such as if statements, ternary
+expression, assertions, and more. Here of course, none equates to false, and any
+other value to true.
+
+  var x: ?intptr = ...;
+  if (x) { ... } // this branch is taken if x is not none
+
+More details concerning option types will follow.

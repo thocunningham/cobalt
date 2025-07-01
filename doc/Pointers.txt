@@ -1,0 +1,77 @@
+Cobalt's pointers are strict but not too restricting, all to ensure the safety
+of Cobalt programs.
+
+One critical rule that Cobalt will always enforce, is that pointer values may
+never be undefined/null. This rule is enforced by never allowing pointer
+variables to be declared without initialization:
+
+  var x: *intptr;       // error: pointer variable "x" is undefined
+  var y: **intptr = &x; // no error
+
+Pointers can be achieved through address-of operations, built-in procedures
+or external procedures.
+
+Speaking of external procedures returning pointers, an external procedure
+returning a pointer can never be declared as just returning a pointer. On other
+ABI's it may be allowed for pointers to be null, and to be perfectly safe, we
+must assume that the pointer can ben null. Therefore, external procedures
+returning pointers must always be declared as returning an optional pointer:
+
+  extern const P1: proc() *intptr;  // error: external procedure cannot return direct pointer value
+  extern const P2: proc() ?*intptr; // no error
+
+Pointer types also keep track of the const-ness of what it's pointing to.
+Taking the address of a constant returns a pointer-to-const that cannot be
+written to. To maintain the fact that the constant is truly a constant.
+
+  const x: intptr = 0;
+  var y: *const intptr = &x;
+  *y = 1; // error: cannot assign to pointer-to-const
+
+Currently, Cobalt does not enforce pointer alignment.
+
+In earlier versions of Cobalt, unsafe pointer operations such as addition,
+subtraction, indexing and conversions to and from integral types, will be
+allowed to limit restrictions during development. These of course, will no
+longer be present by the time Cobalt reaches 1.0.
+
+Pointer addition/subtraction can only be performed with a pointer type on the
+left-hand side and an integral value on the right-hand side. For addition, it
+shouldn't matter on which side the pointer is, but for clarity's sake, it is
+only allowed on the left. The integral value is then scaled to the size of the
+pointer's element's size before it is added. This ensures it doesn't point to
+somewhere inside the same value and maintains alignment.
+
+  var x: [3]intptr = ...;
+  var px1: *intptr = &x[1];
+  var px0: *intptr = b - 1;
+  var px2: *intptr = b + 1;
+
+Pointer indexing works the exact same, but is it a more fancy syntax and it
+only performs pointer addition.
+
+  var x: *intptr = ...;
+  var y: *intptr = x + n; // same as z
+  var z: *intptr = x[n];  // same as y
+
+-------------------------------------------------------------------------------
+
+The syntax revoling around pointers is quite straight-forward. Pointer types
+are denoted with an asterisk followed by "const" if it's a pointer-to-const,
+and the element type:
+
+  var x: *intptr = ...;       // pointer to intptr variable
+  var y: *const intptr = ...; // pointer to intptr constant
+
+Getting the address of a symbol, returning a pointer to the sybol's type is
+done with a prefix unary expression with an ampersand:
+
+  var x: intptr = ...;
+  var y: *intptr = &x;
+
+Dereferencing a pointer is done with a postfix unary expression with ".*",
+taking after the likes of Zig. This choice was made to avoid (future) ambiguity
+with pointer types when the type system grows more complex.
+
+  var x: *intptr = ...;
+  var y: intptr = x.*;
