@@ -117,10 +117,18 @@ type (
 		expr    // position of "("
 	}
 
+	// CastExpr is a type cast expression.
 	CastExpr struct {
 		Type Expr
 		X    Expr
 		expr // position of "("
+	}
+
+	// IndexExpr is an array index expression.
+	IndexExpr struct {
+		X     Expr
+		Index Expr
+		expr  // position of "["
 	}
 
 	// ListExpr is a list of expressions.

@@ -5,6 +5,8 @@
 package main
 
 import (
+	"cobalt/base"
+	"cobalt/syntax"
 	"fmt"
 	"os"
 )
@@ -15,5 +17,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	_ = os.Args[1] // use file here ...
+	file, err := syntax.ParseFile(os.Args[1])
+	if err != nil {
+		base.Errorf("%v", err)
+	}
+
+	_ = file
 }

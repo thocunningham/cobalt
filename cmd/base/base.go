@@ -19,9 +19,14 @@ func Exit(code int) {
 	os.Exit(code)
 }
 
-// Fatalf reports an internal error and exits.
-// If Debug is true, Fatalf panics to force a runtime info dump.
+// Fatalf reports an internal error and exits with a non-zero exit code.
 func Fatalf(format string, a ...any) {
 	fmt.Fprintf(os.Stderr, "internal error: "+format+"\n", a...)
 	Exit(2)
+}
+
+// Error reports a source code error and exits with a non-zero exit code.
+func Errorf(format string, a ...any) {
+	fmt.Fprintf(os.Stderr, "error: "+format+"\n", a...)
+	Exit(1)
 }
