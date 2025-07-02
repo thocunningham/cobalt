@@ -13,4 +13,49 @@ other value to true.
   var x: ?intptr = ...;
   if (x) { ... } // this branch is taken if x is not none
 
-More details concerning option types will follow.
+In the branch where the value is certain to be not none, the type checker
+changes the symbol's type to just the element type. This way, there is no
+additional code needed to extract the value.
+
+  var x: ?intptr = ...;
+  if (x) {
+    x++; // we can assume that x is not none;
+  }
+
+-------------------------------------------------------------------------------
+
+The syntax revolving around optional values is very basic. The only element is
+really the type syntax, which is a question mark followed by the element type:
+
+  var x: ?intptr = ...;
+
+-------------------------------------------------------------------------------
+
+The internal structure of an optional value is simple. It is a struct with the
+element type and a boolean for indicating none or not. When the element type is
+a struct itself, the compiler tries to find a spot for the boolean to minimize
+the increase in size:
+
+  // size = 8
+  const T = struct{
+    x: uint8; // offset +0
+    y: int32; // offset +4
+  };
+
+In the snippet above, there is a gap between the fields that is unused because
+of the alignment requirements of "y". This is an exaggerrated example. In this
+scenario, an optimal placement would be right in between the two, such that the
+struct does not become larger at all.
+
+  // size = 8
+  const T2 = struct{
+    x: uint8;    // offset +0
+    isNone: bool // offset +1
+    y: int32;    // offset +4
+  };
+
+A special case is optional pointers. Cobalt does not allow pointers to be null.
+Null technically has an integral value, zero. This value is not allowed, so we
+can use this to indicate a non-existent optional pointer.
+
+  var x: ?*void = none; // x == 0 under the hood
