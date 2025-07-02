@@ -82,14 +82,27 @@ type (
 		expr  // position of name
 	}
 
-	// BasicLit is a simple literal composed of a single token.
+	// LiteralExpr is a simple literal composed of a single token.
 	LiteralExpr struct {
 		Value string
 		Kind  Literal
 		expr  // position of literal
 	}
 
-	// ProcLit is a complete procedure literal with type and body.
+	// CompoundExpr is a compound expression for a compound type.
+	CompoundExpr struct {
+		List []Expr
+		expr // position of "{"
+	}
+
+	// DotExpr is an assignment in a compound expression.
+	AssignExpr struct {
+		Lhs  Expr
+		Rhs  Expr
+		expr // position of "." or "["
+	}
+
+	// ProcExpr is a complete procedure literal with type and body.
 	ProcExpr struct {
 		Type *ProcType
 		Body *BlockStmt
@@ -162,6 +175,12 @@ type (
 		ParamList []*Field
 		Result    Expr // can be nil
 		expr           // position of "proc"
+	}
+
+	// StructType is a struct type.
+	StructType struct {
+		FieldList []*Field
+		expr      // position of "struct"
 	}
 
 	// Field is a possibly named type field in a struct or procedure type.

@@ -43,6 +43,7 @@ const (
 	_Const       // const
 	_Proc        // proc
 	_Return      // return
+	_Struct      // struct
 	_Var         // var
 	keywordLast  //
 )

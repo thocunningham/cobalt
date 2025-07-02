@@ -469,6 +469,9 @@ func (p *parser) atomExprOrNil() Expr {
 
 		return x
 
+	case _Lbrace:
+		return p.compoundExpr()
+
 	case _Proc:
 		typ := p.procType()
 		if p.tok == _Lbrace {
@@ -483,6 +486,51 @@ func (p *parser) atomExprOrNil() Expr {
 	default:
 		return p.typeOrNil()
 	}
+}
+
+func (p *parser) compoundExpr() *CompoundExpr {
+	if trace {
+		defer debug.Trace()()
+	}
+
+	x := new(CompoundExpr)
+	x.pos = p.want(_Lbrace)
+	if p.got(_Rbrace) {
+		return x
+	}
+
+	var list []Expr
+	for p.tok != _EOF && p.tok != _Rbrace {
+		switch p.tok {
+		case _Dot: // .x = y
+			t := new(AssignExpr)
+			t.pos = p.pos()
+			p.next()
+			t.Lhs = p.name()
+			p.want(_Assign)
+			t.Rhs = p.expr()
+			list = append(list, t)
+
+		case _Lbrack: // [x] = y
+			t := new(AssignExpr)
+			t.pos = p.pos()
+			t.Lhs = p.indexExpr(nil)
+			p.want(_Assign)
+			t.Rhs = p.expr()
+			list = append(list, t)
+
+		default:
+			list = append(list, p.expr())
+		}
+
+		if !p.got(_Comma) && p.tok != _Rbrace {
+			p.error("expected comma or \"}\"")
+		}
+	}
+	p.want(_Rbrace)
+
+	x.List = list
+	return x
 }
 
 func (p *parser) callExpr(x Expr) *CallExpr {
@@ -594,6 +642,9 @@ func (p *parser) typeOrNil() Expr {
 
 	case _Proc:
 		return p.procType()
+
+	case _Struct:
+		return p.structType()
 	}
 
 	return nil
@@ -643,6 +694,35 @@ func (p *parser) paramList() []*Field {
 	}
 
 	return list
+}
+
+func (p *parser) structType() *StructType {
+	if trace {
+		defer debug.Trace()()
+	}
+
+	typ := new(StructType)
+	typ.pos = p.want(_Struct)
+
+	p.want(_Lbrace)
+	if p.got(_Rbrace) {
+		return typ
+	}
+
+	var list []*Field
+	for p.tok != _EOF && p.tok != _Rbrace {
+		f, isNamed := p.field()
+		if !isNamed {
+			p.errorAt(f.pos, "unnamed field in struct")
+		}
+		p.semi()
+
+		list = append(list, f)
+	}
+	p.want(_Rbrace)
+
+	typ.FieldList = list
+	return typ
 }
 
 func (p *parser) field() (f *Field, named bool) {
