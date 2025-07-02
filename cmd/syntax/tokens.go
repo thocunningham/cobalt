@@ -37,6 +37,7 @@ const (
 	_Colon  // :
 	_Dot    // .
 	_Cond   // ?
+	_Deref  // .*
 
 	// keywords, more will be added over time.
 	keywordFirst //

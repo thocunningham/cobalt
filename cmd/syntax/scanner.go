@@ -109,6 +109,9 @@ redo:
 		if isDecimal(s.ch) {
 			s.number(true)
 			break
+		} else if s.ch == '*' {
+			s.nextch()
+			s.tok = _Deref
 		} else {
 			s.tok = _Dot
 		}

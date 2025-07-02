@@ -26,17 +26,18 @@ func _() {
 	_ = x[_Colon-16]
 	_ = x[_Dot-17]
 	_ = x[_Cond-18]
-	_ = x[keywordFirst-19]
-	_ = x[_Const-20]
-	_ = x[_Proc-21]
-	_ = x[_Return-22]
-	_ = x[_Var-23]
-	_ = x[keywordLast-24]
+	_ = x[_Deref-19]
+	_ = x[keywordFirst-20]
+	_ = x[_Const-21]
+	_ = x[_Proc-22]
+	_ = x[_Return-23]
+	_ = x[_Var-24]
+	_ = x[keywordLast-25]
 }
 
-const _token_name = "EOFnameliteralopop==*([{)]},;:.?constprocreturnvar"
+const _token_name = "EOFnameliteralopop==*([{)]},;:.?.*constprocreturnvar"
 
-var _token_index = [...]uint8{0, 3, 7, 14, 16, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 32, 37, 41, 47, 50, 50}
+var _token_index = [...]uint8{0, 3, 7, 14, 16, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 34, 34, 39, 43, 49, 52, 52}
 
 func (i token) String() string {
 	i -= 1
