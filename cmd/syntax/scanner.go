@@ -111,7 +111,8 @@ redo:
 			break
 		} else if s.ch == '*' {
 			s.nextch()
-			s.tok = _Deref
+			s.tok = _Operator
+			s.op = Deref
 		} else {
 			s.tok = _Dot
 		}

@@ -37,7 +37,6 @@ const (
 	_Colon  // :
 	_Dot    // .
 	_Cond   // ?
-	_Deref  // .*
 
 	// keywords, more will be added over time.
 	keywordFirst //
@@ -69,10 +68,11 @@ const (
 	_ Operator = iota
 
 	// unary operators
-	Not  // ~
-	LNot // !
-	Inc  // ++
-	Dec  // --
+	Not   // ~
+	LNot  // !
+	Inc   // ++
+	Dec   // --
+	Deref // .*
 
 	// binary operators, highest precedence first
 	// precOrOr

@@ -12,30 +12,31 @@ func _() {
 	_ = x[LNot-2]
 	_ = x[Inc-3]
 	_ = x[Dec-4]
-	_ = x[OrOr-5]
-	_ = x[AndAnd-6]
-	_ = x[Eql-7]
-	_ = x[Neq-8]
-	_ = x[Lss-9]
-	_ = x[Leq-10]
-	_ = x[Gtr-11]
-	_ = x[Geq-12]
-	_ = x[Add-13]
-	_ = x[Sub-14]
-	_ = x[Or-15]
-	_ = x[Xor-16]
-	_ = x[Mul-17]
-	_ = x[Div-18]
-	_ = x[Rem-19]
-	_ = x[And-20]
-	_ = x[Shl-21]
-	_ = x[Shr-22]
-	_ = x[OperatorMax-23]
+	_ = x[Deref-5]
+	_ = x[OrOr-6]
+	_ = x[AndAnd-7]
+	_ = x[Eql-8]
+	_ = x[Neq-9]
+	_ = x[Lss-10]
+	_ = x[Leq-11]
+	_ = x[Gtr-12]
+	_ = x[Geq-13]
+	_ = x[Add-14]
+	_ = x[Sub-15]
+	_ = x[Or-16]
+	_ = x[Xor-17]
+	_ = x[Mul-18]
+	_ = x[Div-19]
+	_ = x[Rem-20]
+	_ = x[And-21]
+	_ = x[Shl-22]
+	_ = x[Shr-23]
+	_ = x[OperatorMax-24]
 }
 
-const _Operator_name = "~!++--||&&==!=<<=>>=+-|^*/%&<<>>OperatorMax"
+const _Operator_name = "~!++--.*||&&==!=<<=>>=+-|^*/%&<<>>OperatorMax"
 
-var _Operator_index = [...]uint8{0, 1, 2, 4, 6, 8, 10, 12, 14, 15, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 32, 43}
+var _Operator_index = [...]uint8{0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 17, 19, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 34, 45}
 
 func (i Operator) String() string {
 	i -= 1
