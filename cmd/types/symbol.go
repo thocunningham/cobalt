@@ -14,15 +14,15 @@ type Symbol struct {
 	typ  *Type
 
 	// declaration environment
-	// scope *Scope
-	// mod   *Module
+	scope *Scope
+	mod   *Module
 
 	// this field stores additional symbol data, depending on the symbol's flags.
 	// This list is from highest priority to lowest, meaning that the highest set
 	// symbol flag controls what is stored in here.
 	//  symBuiltin: Builtin
 	//  symStatic:  Value
-	extra interface{}
+	extra any
 
 	flags uint32
 }
@@ -33,3 +33,10 @@ const (
 	symStatic              // symbol has a static (init) value
 	symBuiltin             // symbol is a built-in procedure
 )
+
+func (sym *Symbol) Name() string { return sym.name }
+func (sym *Symbol) Pos() src.Pos { return sym.pos }
+func (sym *Symbol) Type() *Type  { return sym.typ }
+
+func (sym *Symbol) Scope() *Scope   { return sym.scope }
+func (sym *Symbol) Module() *Module { return sym.mod }

@@ -135,14 +135,12 @@ type Struct struct {
 
 // Field is a field in a struct or a procedure parameter.
 type Field struct {
+	Name  string
 	Type  *Type
 	Const bool
 }
 
 func NewPointer(elem *Type, const_ bool) *Type {
-	if elem == nil {
-		base.Fatalf("types: no element type")
-	}
 	return &Type{
 		extra: &Pointer{elem, const_},
 		kind:  TPOINTER,
@@ -150,11 +148,32 @@ func NewPointer(elem *Type, const_ bool) *Type {
 }
 
 func NewOption(elem *Type) *Type {
-	if elem == nil {
-		base.Fatalf("types: no element type")
-	}
 	return &Type{
 		extra: &Option{elem, nil},
 		kind:  TOPTION,
+	}
+}
+
+func NewArray(elem *Type, length int32) *Type {
+	if length < 0 {
+		base.Fatalf("types: invalid array length %d", length)
+	}
+	return &Type{
+		extra: &Array{elem, length},
+		kind:  TARRAY,
+	}
+}
+
+func NewSignature(params []*Field, result *Type) *Type {
+	return &Type{
+		extra: &Signature{params, result},
+		kind:  TPROC,
+	}
+}
+
+func NewStruct(fields []*Field) *Type {
+	return &Type{
+		extra: &Struct{fields},
+		kind:  TSTRUCT,
 	}
 }
