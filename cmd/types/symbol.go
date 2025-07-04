@@ -32,6 +32,8 @@ const (
 	symConst               // symbol is immutable after init
 	symStatic              // symbol has a static (init) value
 	symBuiltin             // symbol is a built-in procedure
+
+	symChecking = 1 << 31 // internal flag: symbol is being checked
 )
 
 func (sym *Symbol) Name() string { return sym.name }

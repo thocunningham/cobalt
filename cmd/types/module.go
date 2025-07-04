@@ -28,7 +28,7 @@ func NewModule(name, path string) *Module {
 	mod := new(Module)
 	mod.path = path
 	mod.name = name
-	mod.scope = NewScope(nil, src.NoPos, src.NoPos) // TODO: implement universe scope
+	mod.scope = NewScope(Universe, src.NoPos, src.NoPos)
 	modmap[path] = mod
 
 	return mod
